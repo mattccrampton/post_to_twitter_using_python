@@ -1,6 +1,6 @@
 import tweepy
 
-# See tutorial: https://www.mattcrampton.com/blog/step_by_step_tutorial_to_post_to_twitter_using_python/
+# See tutorial: https://www.mattcrampton.com/blog/step_by_step_tutorial_to_post_to_twitter_using_python_part_two-posting_with_photos/
 
 def main():
     twitter_auth_keys = {
@@ -20,8 +20,13 @@ def main():
             )
     api = tweepy.API(auth)
 
-    tweet = "Yet Another day, another #scifi #book and a cup of #coffee"
-    post_result = api.update_status(status=tweet)
+
+    # Upload image
+    media = api.media_upload("william_gibson.jpg")
+
+    # Post tweet with image
+    tweet = "Great scifi author or greatest scifi author? #williamgibson"
+    post_result = api.update_status(status=tweet, media_ids=[media.media_id])
 
 if __name__ == "__main__":
     main()
