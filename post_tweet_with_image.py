@@ -1,15 +1,11 @@
 import tweepy
+from get_cred import get_authentification_json
 
-# See tutorial: https://www.mattcrampton.com/blog/step_by_step_tutorial_to_post_to_twitter_using_python_part_two-posting_with_photos/
-
-def main():
-    twitter_auth_keys = {
-        "consumer_key"        : "REPLACE_THIS_WITH_YOUR_CONSUMER_KEY",
-        "consumer_secret"     : "REPLACE_THIS_WITH_YOUR_CONSUMER_SECRET",
-        "access_token"        : "REPLACE_THIS_WITH_YOUR_ACCESS_TOKEN",
-        "access_token_secret" : "REPLACE_THIS_WITH_YOUR_ACCESS_TOKEN_SECRET"
-    }
-
+def post_tweet_with_pic(tweet_msg, picture_loc=None):
+    twitter_auth_keys = get_authentification_json()
+    if twitter_auth_keys == {}:
+        print('you need to fill credential.json')
+        return
     auth = tweepy.OAuthHandler(
             twitter_auth_keys['consumer_key'],
             twitter_auth_keys['consumer_secret']
@@ -22,11 +18,12 @@ def main():
 
 
     # Upload image
-    media = api.media_upload("william_gibson.jpg")
+    if picture_loc is not None:
+        media = api.media_upload(picture_loc)
+        post_result = api.update_status(status=tweet_msg, media_ids=[media.media_id])
+    else:
+        post_result = api.update_status(status=tweet_msg)
 
-    # Post tweet with image
-    tweet = "Great scifi author or greatest scifi author? #williamgibson"
-    post_result = api.update_status(status=tweet, media_ids=[media.media_id])
 
 if __name__ == "__main__":
-    main()
+    post_tweet_with_pic("Great scifi author or greatest scifi author? #williamgibson",'william_gibson.jpg')
